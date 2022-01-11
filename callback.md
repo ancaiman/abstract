@@ -13,10 +13,10 @@
 Одна и та же функция callback используется и для информирования об ошибке, и для передачи результатов.
 
 Пример:
->loadScript('/my/script.js', function(error, script) {  
+>``loadScript('/my/script.js', function(error, script) {  
 >  if (error) {  
 >    // обрабатываем ошибку  
 >  } else {  
 >    // скрипт успешно загружен  
 >  }  
->});
+>});``

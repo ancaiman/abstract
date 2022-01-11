@@ -20,4 +20,5 @@ loadScript('/my/script.js', function(error, script) {
   } else {
     // скрипт успешно загружен
   }
-});```
+});
+```

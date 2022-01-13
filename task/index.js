@@ -413,17 +413,14 @@ function getFullName() {
 
 User.prototype.myBind = Function.prototype.call.bind(Function.prototype.bind);
 User.prototype.myCall = Function.prototype.call.bind(Function.prototype.call);
-User.prototype.myApply = Function.prototype.call.bind(Function.prototype.apply);
+User.prototype.myApply = Function.prototype.apply.bind(Function.prototype.apply);
 
 const user = new User({name: 'Papa', lastName: 'Jones'});
 
 const sayNameBind = user.myBind(getFullName, user);
 const sayNameCall = user.myCall(getFullName, user);
-const sayNameApply = user.myApply(getFullName, user);
+const sayNameApply = user.myApply(getFullName, [user])
 
 log(sayNameBind());
 log(sayNameCall);
 log(sayNameApply);
-
-
-

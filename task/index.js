@@ -400,27 +400,113 @@ const log = console.log;
 // log(4);
 // log(5);
 
-class User {
+// class User {
+//   constructor(options) {
+//     this.name = options.name;
+//     this.age = options.age;
+//   }
+// }
+
+// function getNameAndAge() {
+//   return `My name is: ${this.name}, I'm ${this.age} years old`;
+// }
+
+// User.prototype.myBind = Function.prototype.call.bind(Function.prototype.bind);
+// User.prototype.myCall = Function.prototype.call.bind(Function.prototype.call);
+// User.prototype.myApply = Function.prototype.apply.bind(Function.prototype.apply);
+
+// const user = new User({name: 'Papa', age: 30});
+
+// const sayNameAndAgeBind = user.myBind(getNameAndAge, user);
+// const sayNameAndAgeCall = user.myCall(getNameAndAge, user);
+// const sayNameAndAgeApply = user.myApply(getNameAndAge, [user])
+
+// log(sayNameAndAgeBind());
+// log(sayNameAndAgeCall);
+// log(sayNameAndAgeApply);
+
+class Humidifier {
   constructor(options) {
-    this.name = options.name;
-    this.lastName = options.lastName;
+    this.model = options.model
+    this.color = options.color
+    this._maxWaterAmount = options.maxWaterAmount
+  }
+  _maxIntensity = 100;
+  _maxWaterAmount = 0;
+  _waterAmount = 0;
+  _power = false;
+  _isOn = false;
+  _isOff = true;
+  _intensity = 0;
+  
+  setPower() {
+    if (!this._power) {
+      this._power = true;
+      return log(`Питание подано`);
+    }
+    this._power = false;
+    return log(`Питание отключено`);
+  }
+
+  setOn() {
+    if (!this._power) return log(`Подключите увлажнитель к питанию`);
+    this._isOn = true;
+    this._isOff = false;
+    return log(`Увлажнитель включён`);
+  }
+
+  setOff() {
+    if (this._isOff) {
+      return log(`Увлажнитель уже выключен`);
+    }
+    this._isOff = true;
+    this._isOn = false;
+    return log(`Увлажнитель выключен`);
+  }
+
+  get waterAmount() {
+    return this._waterAmount;
+  }
+
+  set waterAmount(value) {
+    if (value === this._maxWaterAmount) {
+      this._waterAmount = value;
+      return log(`Добавлено максимальное количество воды, ${value}мл`);
+    } else if (value > this._maxWaterAmount) {
+      this._waterAmount = 5000;
+      return log(`Воды слишком много`);
+    }
+    this._waterAmount = value;
+    return log(`Добавлено ${value}мл воды`);
+  }
+
+  get intensity() {
+    return this._intensity;
+  }
+
+  set intensity(value) {
+    if (value >= this._maxIntensity) {
+      this._intensity = this._maxIntensity;
+      return log(`Установлена максимальная интенсивность, режим ${this._intensity}% влажности`);
+    } else if (value <= 0) {
+      this._intensity = 0;
+      return log(`Установлена минимальная интенсивность, влажность ${this._intensity}%`);
+    }
+    this._intensity = value;
+    return log(`Установлен режим ${value}% влажности`);
   }
 }
 
-function getFullName() {
-  return `My name is: ${this.name} ${this.lastName}`;
-}
-
-User.prototype.myBind = Function.prototype.call.bind(Function.prototype.bind);
-User.prototype.myCall = Function.prototype.call.bind(Function.prototype.call);
-User.prototype.myApply = Function.prototype.apply.bind(Function.prototype.apply);
-
-const user = new User({name: 'Papa', lastName: 'Jones'});
-
-const sayNameBind = user.myBind(getFullName, user);
-const sayNameCall = user.myCall(getFullName, user);
-const sayNameApply = user.myApply(getFullName, [user])
-
-log(sayNameBind());
-log(sayNameCall);
-log(sayNameApply);
+const humidifier = new Humidifier({model: 'deerma', color: 'white', maxWaterAmount: 5000});
+humidifier.setPower();
+humidifier.setOff();
+humidifier.setOn();
+humidifier.setOff();
+humidifier.setOff();
+humidifier.setPower();
+humidifier.setOn();
+humidifier.setOff();
+humidifier.setPower();
+humidifier.setOn();
+humidifier.intensity = 100;
+humidifier.waterAmount = 4000;

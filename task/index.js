@@ -473,24 +473,24 @@ class Humidifier {
   }
 
   get waterAmount() {
-    return this._waterAmount;
+    return log(`В баке ${this._waterAmount}мл воды`);
   }
 
   set waterAmount(value) {
     if (value === this._maxWaterAmount) {
       this._waterAmount = value;
-      return log(`Добавлено максимальное количество воды, ${value}мл`);
+      return log(`В баке максимум воды, ${value}мл`);
     } else if (value > this._maxWaterAmount) {
       this._waterAmount = 5000;
       return log(`Воды слишком много`);
     }
-    this._waterAmount = value;
+    this._waterAmount = value
     this.notifyAboutMinWaterAmount();
-    return log(`Добавлено ${value}мл воды`);
+    return this._waterAmount;
   }
 
   get intensity() {
-    return this._intensity;
+    return log(`Установлен режим ${this._intensity}% влажности`);
   }
 
   set intensity(value) {
@@ -504,18 +504,27 @@ class Humidifier {
     this._intensity = value;
     return log(`Установлен режим ${value}% влажности`);
   }
+
+  moistening(waterAmount, intensity, timeInSeconds) {
+    this._waterAmount = waterAmount;
+    this._intensity = intensity;
+    let startTime = 0;
+    let finishTime = timeInSeconds * 1000;
+    log(`В баке ${this._waterAmount}мл воды, установлен режим ${this._intensity}% влажности, на ${timeInSeconds} секунд`)
+    
+    let timerId = setInterval(function() {
+      waterAmount = waterAmount - (intensity / 2);
+      if (finishTime == startTime) {
+        this._waterAmount = waterAmount;
+        log(`Осталось ${this._waterAmount}мл Воды`);
+        clearInterval(timerId);
+      }
+      finishTime -= 1000;
+    }, 1000);
+  }
 }
 
-const humidifier = new Humidifier({model: 'deerma', color: 'white', maxWaterAmount: 5000});
-humidifier.setPower();
-humidifier.setOff();
-humidifier.setOn();
-humidifier.setOff();
-humidifier.setOff();
-humidifier.setPower();
-humidifier.setOn();
-humidifier.setOff();
-humidifier.setPower();
-humidifier.setOn();
-humidifier.intensity = 100;
-humidifier.waterAmount = 2000;
+const someHumidifier = new Humidifier({model: 'model', color: 'color', maxWaterAmount: 5000});
+someHumidifier.setPower();
+someHumidifier.setOn();
+someHumidifier.moistening(4000, 50, 10);

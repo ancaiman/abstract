@@ -17,35 +17,28 @@ class Humidifier {
   _intensity = 0;
   _lastCalculatedWaterLevel = 0;
   _waterSensor = true; // Boolean(value); // Значение Value приходит от сенсора, его логика работы нам неизвестна.
-  
-  //Сигнал предупреждения о низком уровне воды.
-  _notifyAboutMinWaterAmount() {
-    return log(`Осталось мало воды`); //
-  }
 
   //Таймер который считает сколько воды испарилось.
   startTimer(timeInSeconds) {
     let startTime = 0;
-    let finishTime = timeInSeconds * 1000;
+    let finishTime = ((timeInSeconds * 1000) - 1000);
     let sumWaterEvaporated = this._lastCalculatedWaterLevel;
     let intensity = this._intensity;
-    let waterSensor = this._waterSensor;
     let maxWaterLevel = this._maxWaterLevel;
 
     let timeEvaporated = setInterval(function() {
-      if (!waterSensor) {
-        clearInterval(timeEvaporated);
-      } else if (sumWaterEvaporated >= (maxWaterLevel - 200)) {
-        clearInterval(timeEvaporated);
-      } else if (finishTime === startTime) {
+      if (finishTime === startTime) {
         clearInterval(timeEvaporated);
       }
       sumWaterEvaporated += (intensity / 2);
+      if (sumWaterEvaporated >= (maxWaterLevel - 200)) {
+        log(`Осталось мало воды`);
+      }
       finishTime -= 1000;
     }, 1000)
   }
 
-  //Внешний интерфейс (крутилка - вкл/установка интенсивности/выкл)
+  //Внешний интерфейс (крутилка - вкл-выкл/установка интенсивности)
   //Включение увлажнителя, установка интенсивности.
   setOn() {
     if (!this._waterSensor) return log(`Нет воды`);

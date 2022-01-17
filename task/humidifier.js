@@ -8,7 +8,7 @@ class Humidifier {
   constructor(characteristics) {
     this.model = characteristics.model
     this.color = characteristics.color
-    this._maxWaterAmount = characteristics.maxWaterAmount
+    this._maxWaterLevel = characteristics.maxWaterLevel
   }
 
   //Внутренний интерфейс
@@ -27,32 +27,31 @@ class Humidifier {
   startTimer(timeInSeconds) {
     let startTime = 0;
     let finishTime = timeInSeconds * 1000;
+    let sumWaterEvaporated = this._lastCalculatedWaterLevel;
+    let intensity = this._intensity;
+    let waterSensor = this._waterSensor;
+    let maxWaterLevel = this._maxWaterLevel;
 
-    let timerId = setInterval(function() {
-      log(this._lastCalculatedWaterLevel);
-      if (finishTime === startTime) { // Запускаем таймер        
-        if (this._lastCalculatedWaterLevel >= (this._maxWaterLevel - 200)) { //Если испарили воды столько, что в баке осталось <= 200мл воды, посылаем сигнал.
-          this._notifyAboutMinWaterAmount;
-        } else if (!this._waterSensor) { //Если продолжаем испарять воду и сенсор сообщит что воды не осталось для безопасности выключаем увлажнитель.
-          this.setOff;
-          clearInterval(timerId);
-        }
-        log(`Испарили ${this._lastCalculatedWaterLevel}мл воды`)
+    let timeEvaporated = setInterval(function() {
+      if (!waterSensor) {
+        clearInterval(timeEvaporated);
+      } else if (sumWaterEvaporated >= (maxWaterLevel - 200)) {
+        clearInterval(timeEvaporated);
+      } else if (finishTime === startTime) {
+        clearInterval(timeEvaporated);
       }
-      this._lastCalculatedWaterLevel += (this._intensity / 2);
+      sumWaterEvaporated += (intensity / 2);
       finishTime -= 1000;
-      return '123';
-    }, 1000);
+    }, 1000)
   }
 
-  //Включение увлажнителя
-  setOn(intensity) {
+  //Внешний интерфейс (крутилка - вкл/установка интенсивности/выкл)
+  //Включение увлажнителя, установка интенсивности.
+  setOn() {
     if (!this._waterSensor) return log(`Нет воды`);
-    this._intensity = intensity;
     return log(`Увлажнитель включён`);
   }
 
-  //Внешний интерфейс (крутилка вкл/установка интенсивности/выкл)
   //Выключение увлажнителя
   setOff() {
     this._intensity = 0;
@@ -82,6 +81,7 @@ class Humidifier {
   }
 }
 
-const someHumidifier = new Humidifier({model: 'model', color: 'color', maxWaterAmount: 5000});
-someHumidifier.setOn(20);
+const someHumidifier = new Humidifier({model: 'model', color: 'color', maxWaterLevel: 5000});
+someHumidifier.setOn();
+someHumidifier.intensity = 20;
 someHumidifier.startTimer(5);

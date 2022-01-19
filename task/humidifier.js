@@ -6,8 +6,8 @@ const log = console.log;
 class Humidifier {
   //Сущность с набором характеристик
   constructor(characteristics) {
-    this.model = characteristics.model
-    this.color = characteristics.color
+    this._model = characteristics.model
+    this._color = characteristics.color
     this._maxWaterLevel = characteristics.maxWaterLevel
   }
 
@@ -16,32 +16,29 @@ class Humidifier {
   _maxWaterLevel = 0;
   _intensity = 0;
   _lastCalculatedWaterLevel = 0;
-  _waterSensor = true; // Boolean(value); // Значение Value приходит от сенсора, его логика работы нам неизвестна.
+  _waterSensorValue = 1; // Значение Value приходит от сенсора, его логика работы нам неизвестна.
 
   //Таймер который считает сколько воды испарилось.
   startTimer(timeInSeconds) {
     let startTime = 0;
     let finishTime = ((timeInSeconds * 1000) - 1000);
-    let sumWaterEvaporated = this._lastCalculatedWaterLevel;
-    let intensity = this._intensity;
-    let maxWaterLevel = this._maxWaterLevel;
 
-    let timeEvaporated = setInterval(function() {
+    let timeEvaporated = setInterval(() => {
       if (finishTime === startTime) {
         clearInterval(timeEvaporated);
       }
-      sumWaterEvaporated += (intensity / 2);
-      if (sumWaterEvaporated >= (maxWaterLevel - 200)) {
+      this._lastCalculatedWaterLevel += (this._intensity / 2);
+      if (this._lastCalculatedWaterLevel >= (this._maxWaterLevel - 200)) {
         log(`Осталось мало воды`);
       }
       finishTime -= 1000;
     }, 1000)
   }
 
-  //Внешний интерфейс (крутилка - вкл-выкл/установка интенсивности)
+  //Внешний интерфейс
   //Включение увлажнителя, установка интенсивности.
   setOn() {
-    if (!this._waterSensor) return log(`Нет воды`);
+    if (this._waterSensorValue == 0) return log(`Нет воды`);
     return log(`Увлажнитель включён`);
   }
 

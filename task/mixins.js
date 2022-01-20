@@ -5,7 +5,7 @@ let swim = {
   },
 
   getSwimProperties(){
-    console.log(`плавает ${this.speed} ${this.direction}`);
+    console.log(`${this.name} плавает со скоростью ${this.speed}, ${this.direction}`);
   }
 }
  
@@ -16,6 +16,6 @@ class Reptile {
 }
  
 Object.assign(Reptile.prototype, swim);
-let alligator = new Reptile("аллигатор");
+let alligator = new Reptile("Аллигатор");
 alligator.setSwimProperties("5 м/с", "вверх по течению");
 alligator.getSwimProperties();

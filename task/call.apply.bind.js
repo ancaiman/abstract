@@ -7,20 +7,34 @@ class User {
   }
 }
 
+const user = new User({name: 'Papa', age: 30});
+
 function getNameAndAge() {
   return `My name is: ${this.name}, I'm ${this.age} years old`;
 }
 
-User.prototype.myBind = Function.prototype.call.bind(Function.prototype.bind);
-User.prototype.myCall = Function.prototype.call.bind(Function.prototype.call);
-User.prototype.myApply = Function.prototype.apply.bind(Function.prototype.apply);
+Function.prototype.myBind = function(context, ...rest) {
+  let fn = this;
+  return function (...arr) {
+    return fn.myCall(context, arr.concat(rest));
+  }
+};
 
-const user = new User({name: 'Papa', age: 30});
+Function.prototype.myCall = function(context, ...rest) {
+  context.fn = this;
+  return context.fn(...rest);
+};
 
-const sayNameAndAgeBind = user.myBind(getNameAndAge, user);
-const sayNameAndAgeCall = user.myCall(getNameAndAge, user);
-const sayNameAndAgeApply = user.myApply(getNameAndAge, [user])
+Function.prototype.myApply = function(context, args) {
+  context.fn = this;
+  return context.fn(args);
+};
+
+const sayNameAndAgeBind = getNameAndAge.myBind(user);
+const sayNameAndAgeCall = getNameAndAge.myCall(user);
+const sayNameAndAgeApply = getNameAndAge.myApply(user)
 
 log(sayNameAndAgeBind());
 log(sayNameAndAgeCall);
 log(sayNameAndAgeApply);
+log(user)

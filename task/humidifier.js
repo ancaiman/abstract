@@ -17,10 +17,10 @@ class Humidifier {
   _maxWaterLevel = 0;
   _intensity = 0;
   _lastCalculatedWaterLevel = 0;
-  _waterSensorValue = 1; // Значение Value приходит от сенсора, его логика работы нам неизвестна.
-  _timerToCheckWaterSensor = setInterval(() => {this._checkWaterSensor()}, 5000) // Как только увлажнитель включён запускаем таймер для опроса сенсора.
+  _waterSensorValue = 1; // Значение Value приходит от сенсора, 1 - вода есть, 0 - нет
+  _timerToCheckWaterSensor = setInterval(() => {this._checkWaterSensor()}, 5000) // Таймер опроса сенсора
 
-  // Опрашиваем сенсор, если воды нет, выключаем увлажнитель.
+  // Выключаем увлажнитель, если водны нет.
   _checkWaterSensor() {
     if (this._waterSensorValue === 0) {
       log(`Нет воды`);

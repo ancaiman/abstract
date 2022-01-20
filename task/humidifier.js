@@ -1,5 +1,6 @@
-/* Для простоты будем считать, 
-что пользователь всегда наливает полный бак воды */
+/* Для примера был использован увлажнитель с механической ручкой-крутилкой, 
+которая при повороте включает увлажнитель, устанавливает интенсивность увлажнения,
+выключает если вернуться в исходное положение */
 
 const log = console.log;
 
@@ -17,17 +18,29 @@ class Humidifier {
   _intensity = 0;
   _lastCalculatedWaterLevel = 0;
   _waterSensorValue = 1; // Значение Value приходит от сенсора, его логика работы нам неизвестна.
+  _timerIntervalToCheckWaterSensor = setInterval(() => {this._checkWaterSensor()}, 5000) // Начинаем опрашивать сенсор сразу, как увлажнитель включён.
 
-  //Таймер который считает сколько воды испарилось.
-  startTimer(timeInSeconds) {
+  // Ведём опрос сенсора, если воды нет, тогда отключаем увлажнитель.
+  _checkWaterSensor() {
+    if (this._waterSensorValue === 0) {
+      log(`Нет воды`);
+      this.setOff();
+    }
+  }
+
+  //Таймер который считает сколько воды испарилось, таймер принимает значение для упрощения примера.
+  _startTimer(timeInSeconds) {
     let startTime = 0;
-    let finishTime = ((timeInSeconds * 1000) - 1000);
+    let finishTime = (timeInSeconds * 1000);
 
     let timeEvaporated = setInterval(() => {
+      if (this._waterSensorValue === 0) clearInterval(timeEvaporated);
       if (finishTime === startTime) {
         clearInterval(timeEvaporated);
+        log(`Испарилось ${this._lastCalculatedWaterLevel}мл воды`)
       }
       this._lastCalculatedWaterLevel += (this._intensity / 2);
+
       if (this._lastCalculatedWaterLevel >= (this._maxWaterLevel - 200)) {
         log(`Осталось мало воды`);
       }
@@ -37,13 +50,15 @@ class Humidifier {
 
   //Внешний интерфейс
   //Включение увлажнителя, установка интенсивности.
-  setOn() {
-    if (this._waterSensorValue == 0) return log(`Нет воды`);
+  setOn(intensity, timeInSeconds) {
+    this._intensity = intensity;
+    this._startTimer(timeInSeconds)
     return log(`Увлажнитель включён`);
   }
 
   //Выключение увлажнителя
   setOff() {
+    clearInterval(this._timerIntervalToCheckWaterSensor);
     this._intensity = 0;
     this._lastCalculatedWaterLevel = 0;
     return log(`Увлажнитель выключен`);
@@ -72,6 +87,4 @@ class Humidifier {
 }
 
 const someHumidifier = new Humidifier({model: 'model', color: 'color', maxWaterLevel: 5000});
-someHumidifier.setOn();
-someHumidifier.intensity = 20;
-someHumidifier.startTimer(5);
+someHumidifier.setOn(20, 5);

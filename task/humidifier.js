@@ -5,7 +5,7 @@
 const log = console.log;
 
 class Humidifier {
-  //Сущность с набором характеристик
+  //Конструктор сущности с набором характеристик
   constructor(characteristics) {
     this._model = characteristics.model
     this._color = characteristics.color
@@ -18,9 +18,9 @@ class Humidifier {
   _intensity = 0;
   _lastCalculatedWaterLevel = 0;
   _waterSensorValue = 1; // Значение Value приходит от сенсора, его логика работы нам неизвестна.
-  _timerIntervalToCheckWaterSensor = setInterval(() => {this._checkWaterSensor()}, 5000) // Начинаем опрашивать сенсор сразу, как увлажнитель включён.
+  _timerToCheckWaterSensor = setInterval(() => {this._checkWaterSensor()}, 5000) // Как только увлажнитель включён запускаем таймер для опроса сенсора.
 
-  // Ведём опрос сенсора, если воды нет, тогда отключаем увлажнитель.
+  // Опрашиваем сенсор, если воды нет, выключаем увлажнитель.
   _checkWaterSensor() {
     if (this._waterSensorValue === 0) {
       log(`Нет воды`);
@@ -58,7 +58,7 @@ class Humidifier {
 
   //Выключение увлажнителя
   setOff() {
-    clearInterval(this._timerIntervalToCheckWaterSensor);
+    clearInterval(this._timerToCheckWaterSensor);
     this._intensity = 0;
     this._lastCalculatedWaterLevel = 0;
     return log(`Увлажнитель выключен`);

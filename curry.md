@@ -1,6 +1,6 @@
 Каррирование – это трансформация функций таким образом, чтобы они принимали аргументы не как ``f(a, b, c)``, а как ``f(a)(b)(c)``.
 
-``js
+```js
 function curry(f) { // curry(f) выполняет каррирование
   return function(a) {
     return function(b) {
@@ -16,4 +16,5 @@ function sum(a, b) {
 
 let curriedSum = curry(sum);
 
-alert( curriedSum(1)(2) ); // 3``
+alert( curriedSum(1)(2) ); // 3
+```

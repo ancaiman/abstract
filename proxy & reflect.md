@@ -9,7 +9,8 @@ let proxy = new Proxy(target, handler);```
 ```js
 let user = {};
 Reflect.set(user, 'name', 'Вася');
-console.log(user.name); // Вася```
+console.log(user.name); // Вася
+```
 
 Отключаемый (revocable) прокси – это прокси, который может быть отключён вызовом специальной функции.
 ```js
